@@ -1,0 +1,190 @@
+﻿<Window x:Class="EditingTimeStampTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EditingTimeStampTool"
+				xmlns:err="clr-namespace:OutputLog;assembly=OutputLog"
+        mc:Ignorable="d"
+				Background="#FF2D343D"
+        Title="Galm's Editing/Recording Tool!" Height="430.333" Width="818.666" Loaded="Window_Loaded" Closing="Window_Closing">
+	<Window.Resources>
+
+		<ContextMenu x:Key="CustomMessages_CM" Closed="ContextMenu_Closed">
+			<!--<MenuItem x:Name="DeleteBN_MI" IsChecked="False" Header="Delete Node" PreviewMouseLeftButtonDown="DeleteBaseNode_Click">
+			</MenuItem>-->
+		</ContextMenu>
+		
+	</Window.Resources>
+	<Grid x:Name="Main_Grid" Margin="0,0,2,0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="585*"/>
+			<ColumnDefinition Width="224*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="25"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="0"/>
+		</Grid.RowDefinitions>
+
+		<Menu Grid.Column="0" Background="Transparent" Foreground="White" VerticalAlignment="Top" Margin="0,4,0,0" Height="18" Grid.ColumnSpan="2">
+			<MenuItem x:Name="TimeStampes_MI" Header="Time Stamps" Foreground="White" Click="TimeStampes_MI_Click">
+			</MenuItem>
+		</Menu>
+		<Menu Grid.Column="0" Background="Transparent" Foreground="White" VerticalAlignment="Top" Margin="80,4,0,0" Height="18" Grid.ColumnSpan="2">
+			<MenuItem x:Name="HotKey_MI" Header="Hot Keys" Foreground="White" Click="HotKey_MI_Click">
+			</MenuItem>
+		</Menu>
+		<Menu Grid.Column="0" Background="Transparent" Foreground="White" VerticalAlignment="Top" Margin="140,4,0,0" Height="18" Grid.ColumnSpan="2">
+			<MenuItem x:Name="QuickMessages_MI" Header="Quick Comments" Foreground="White" Click="QuickMessages_MI_Click">
+			</MenuItem>
+		</Menu>
+		<Menu Grid.Column="0" Background="Transparent" Foreground="White" VerticalAlignment="Top" Margin="270,4,0,0" Height="18" Grid.ColumnSpan="2">
+			<MenuItem x:Name="Test_MI" Header="Test" Foreground="White" Click="Test_MI_Click" Visibility="Hidden"/>
+		</Menu>
+		<Menu Grid.Column="0" Background="Transparent" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="270,4,0,0" Height="18" Grid.ColumnSpan="2">
+			<MenuItem x:Name="Log_MI" Header="Log" Foreground="White" Click="Log_MI_Click" Visibility="Visible"/>
+		</Menu>
+		<Grid x:Name="Comments_Grid" Grid.Row="1" Visibility="Hidden">
+			<Image Source="Image/GalmLogo.png" Margin="489,9,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78" Height="69"/>
+			<TextBlock Text="Custom Quick Messages:" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,30,0,0" FontWeight="Bold" Height="21" Width="142" RenderTransformOrigin="0.519,0.683"/>
+			<TextBlock Text="New Message!" Foreground="White" Margin="27,51,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="81"/>
+			<TextBox x:Name="NewMessage_TB" Margin="113,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="335" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" TextChanged="Game_TB_TextChanged" Height="20"/>
+			<Button x:Name="AddMsg_BTN" Content="Add" Margin="453,50,0,0" Width="36" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#FF1E2126" BorderBrush="#FF02B98F" BorderThickness="2" Foreground="White" Click="AddMsg_BTN_Click"/>
+
+			<ListBox x:Name="Messages_LB" Grid.Row="1" Margin="10,83,18,0" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+			</ListBox>
+
+		</Grid>
+
+		<Grid x:Name="HotKey_Grid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden">
+			<Image Source="Image/GalmLogo.png" Margin="489,9,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78" Height="69"/>
+			<TextBlock Text="Click the box to reassign the key!" Foreground="White" Margin="213,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="173"/>
+			<TextBlock Text="Hot Keys:" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,2,0,0" FontWeight="Bold" Height="22" Width="96" RenderTransformOrigin="0.519,0.683"/>
+
+
+			<TextBlock Text="Start Recording Hot Key:" Foreground="White" Margin="24,24,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="StartRec_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F" VerticalAlignment="Top" Width="224" Margin="184,24,0,0" KeyDown="StartRec_HK_TB_KeyDown" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,24,0,0" IsChecked="{Binding Path=bStartRecKey, Mode=TwoWay}"/>
+
+
+			<TextBlock Text="Stop Recording Hot Key:" Foreground="White" Margin="24,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="StopRec_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  VerticalAlignment="Top" Width="224" Margin="184,44,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="StopRec_HK_TB_KeyDown"/>
+			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,46,0,0" IsChecked="{Binding Path=bStopRecKey, Mode=TwoWay}"/>
+
+			<TextBlock Text="Start TimeStamp Hot Key:" Foreground="White" Margin="24,66,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="StartTimeStamp_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  VerticalAlignment="Top" Width="224" Margin="184,64,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="StartTimeStamp_HK_TB_KeyDown"/>
+			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,66,0,0" IsChecked="{Binding Path=bStartTimeStamp, Mode=TwoWay}"/>
+
+			<TextBlock Text="Stop TimeStamp Hot Key:" Foreground="White" Margin="24,86,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="StopTimeStamp_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  VerticalAlignment="Top" Width="224" Margin="184,84,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="StopTimeStamp_HK_TB_KeyDown"/>
+			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,86,0,0" IsChecked="{Binding Path=bStopTimeStamp, Mode=TwoWay}"/>
+
+			<TextBlock Text="Single TimeStamp Hot Key:" Foreground="White" Margin="24,108,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="SingleTimeStamp_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  VerticalAlignment="Top" Width="224" Margin="184,104,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="SingleTimeStamp_HK_TB_KeyDown"/>
+			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,106,0,0" IsChecked="{Binding Path=bSingleTimeStamp, Mode=TwoWay}"/>
+
+
+		</Grid>
+
+		<Grid x:Name="TimeStamp_Grid" Grid.Row="1" Visibility="Visible">
+			<Image Source="Image/GalmLogo.png" Margin="489,9,0,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78" Height="69"/>
+
+			<TextBlock Grid.Row="1" Text="File Log Name:" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" Height="16" Width="79"/>
+			<TextBox x:Name="FileName_TB" Grid.Row="1" Margin="100,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" Height="20" IsEnabled="False"/>
+			<Button x:Name="FileBrowse_BTN" Grid.Row="1" Content="Browse" Margin="420,9,0,0" Width="49" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#FF1E2126" BorderBrush="#FF02B98F" BorderThickness="2" Foreground="White" Click="FileBrowse_BTN_Click"/>
+
+			<TextBlock Grid.Row="1" Text="Game:" Margin="55,36,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" RenderTransformOrigin="0.549,1.667" Height="16" Width="34"/>
+			<TextBox x:Name="Game_TB" Grid.Row="1" Margin="100,34,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="262" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" TextChanged="Game_TB_TextChanged" Height="20" IsEnabled="False"/>
+
+			<TextBox x:Name="SessionNum_TB" Grid.Row="1" Margin="420,34,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="49" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" TextChanged="SessionNum_TB_TextChanged" Height="20" IsEnabled="False"/>
+			<TextBlock Grid.Row="1" Text="Session#:" Margin="367,37,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" RenderTransformOrigin="0.549,1.667" Width="55" Height="16"/>
+
+
+
+
+			<TextBlock Grid.Row="1" Text="Time Stamp Log:" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,65,0,0" FontWeight="Bold" Height="21" Width="97" RenderTransformOrigin="0.519,0.683"/>
+			<ListBox x:Name="TimeStamps_LB" Grid.Row="1" Margin="10,83,18,0" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="100"/>
+								<ColumnDefinition Width="15"/>
+								<ColumnDefinition Width="100"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="{Binding StartTimeStamp}"/>
+							<TextBlock Grid.Column="1" Text="-->"/>
+							<TextBlock Grid.Column="2" Text="{Binding EndTimeStamp}"/>
+							<TextBox  Grid.Column="3" Foreground="White" Background="Transparent" BorderBrush="#FF02B98F" Text="{Binding Comment, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" PreviewMouseRightButtonDown="CustomComment_MI_RightClick"/>
+
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+
+				<!--<TextBlock Text="Stamp [01:25:55] : Went and got food... so edit it out pls"/>-->
+
+			</ListBox>
+
+
+			<TextBox x:Name="SessionNum_TB_Copy" Grid.Row="1" Margin="420,59,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="49" Background="#FF1E2126" Foreground="White" BorderBrush="#FF02B98F"  BorderThickness="2" Height="20" RenderTransformOrigin="0.503,1.5" KeyDown="SessionNum_TB_Copy_KeyDown" Visibility="Hidden"/>
+
+
+
+		</Grid>
+
+
+
+		<!--BUTTONS-->
+		<Button x:Name="StartRecording_BTN" Grid.Row="2" VerticalAlignment="Top" Height="33" Margin="0,5,459,0" Background="#FF1E2126" Foreground="White" HorizontalAlignment="Right" Width="74" Click="StartRecording_BTN_Click" BorderBrush="#FF02B98F"   BorderThickness="2">
+			<TextBlock Text="Start Recording" TextWrapping="Wrap" FontSize="11" TextAlignment="Center" HorizontalAlignment="Right"/>
+		</Button>
+		<Button x:Name="StopRecording_BTN" Grid.Row="2" VerticalAlignment="Top" Height="33" Margin="0,5,380,0" Background="#FF1E2126" Foreground="White" HorizontalAlignment="Right" Width="74" Click="StopRecording_BTN_Click" BorderBrush="#FF02B98F"  BorderThickness="2">
+			<TextBlock Text="Stop Recording" TextWrapping="Wrap" FontSize="11" TextAlignment="Center"/>
+		</Button>
+
+		<Button x:Name="StartTimeStamp_BTN" Grid.Row="2" VerticalAlignment="Top" Height="33" Margin="0,5,261,0" Background="#FF1E2126" Foreground="White" HorizontalAlignment="Right" Width="74" Click="StartTimeStamp_BTN_Click" BorderBrush="#FF02B98F"  BorderThickness="2">
+			<TextBlock Text="Start Time Stamp" TextWrapping="Wrap" FontSize="11" TextAlignment="Center"/>
+		</Button>
+		<Button x:Name="EndTimeStop_BTN" Grid.Row="2" VerticalAlignment="Top" Height="33" Margin="0,5,183,0" Background="#FF1E2126" Foreground="White" HorizontalAlignment="Right" Width="74" Click="EndTimeStop_BTN_Click" BorderBrush="#FF02B98F"  BorderThickness="2">
+			<TextBlock Text="End Time Stamp" TextWrapping="Wrap" FontSize="11" TextAlignment="Center"/>
+		</Button>
+		<Button x:Name="SingleTimeStamp_BTN" Grid.Row="2" VerticalAlignment="Top" Height="33" Margin="0,5,56,0" Background="#FF1E2126" Foreground="White" HorizontalAlignment="Right" Width="74" BorderBrush="#FF02B98F"  BorderThickness="2" Click="SingleTimeStamp_BTN_Click">
+			<TextBlock Text="Single TimeStamp" TextWrapping="Wrap" FontSize="11" TextAlignment="Center"/>
+		</Button>
+
+
+		<TextBlock Grid.Row="2" Text="Recording Time:" Margin="0,0,103,12" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Right" Width="85" Height="16" Grid.Column="1"/>
+		<TextBox x:Name="CurrentTime_TB" Grid.Row="2" Margin="0,10,22,0" Background="#FF1E2126" BorderBrush="#FF02B98F"  BorderThickness="2" Foreground="White" RenderTransformOrigin="0.392,1.486" HorizontalAlignment="Right" Width="76" Height="20" VerticalAlignment="Top" Grid.Column="1" />
+
+		<TextBlock Grid.Row="1" Text="Remaining HDD Space:" Margin="38,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" Height="16" Width="122" Grid.Column="1"/>
+		<ListBox x:Name="HDDSpace_LB" Grid.Row="1" Margin="0,36,10,0" Background="#FF1E2126" BorderBrush="#FF02B98F"  BorderThickness="2" Foreground="White" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="50"/>
+							<ColumnDefinition Width="20"/>
+							<ColumnDefinition Width="75"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<Image Source="Image/HardDrive.png" Width="30" Height="30"/>
+						<TextBlock Grid.Column="1" Text="{Binding DriveName, Mode=TwoWay}"/>
+						<TextBlock Grid.Column="2" Text="{Binding SpaceRemaining, Mode=TwoWay}"/>
+						<TextBlock Grid.Column="3" Text="{Binding SpaceRemaining_Percent, Mode=TwoWay}"/>
+
+
+
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<err:OutputLog x:Name="Err_OutputLog" Grid.Row="3" Grid.ColumnSpan="2"/>
+
+
+	</Grid>
+</Window>
