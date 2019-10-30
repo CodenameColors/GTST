@@ -20,4 +20,4 @@ The tool does a couple things after the corect info is given (Filename)
  1.) temp file will be created and every time a time stamp is created it will save it there. 
  2.) temp file is deleted on recording stopping
  3.) fixing the grabbing keyboard focus issue
- 4.) fixing issue where drives don't show.
+ 4.) fixing issue where drives don't show. 
