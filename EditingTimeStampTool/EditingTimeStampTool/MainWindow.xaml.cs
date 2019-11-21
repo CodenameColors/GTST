@@ -1,6 +1,7 @@
 ﻿using mrousavy;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,8 @@ namespace EditingTimeStampTool
 	{
 		String FileNameAddition= "NONE";
 		private bool bCanRecord = false;
-		long HDDCheckInterval = 600000;
+		private bool bIsRecording = false;
+		long HDDCheckInterval = 1000000;
 
 		System.Timers.Timer RecordingTimer_log = new System.Timers.Timer();
 		System.Timers.Timer HDDCheck_Timer = new System.Timers.Timer();
@@ -41,7 +43,8 @@ namespace EditingTimeStampTool
 
 		public List<TimestampInfo> TimeStamps { get; set; }
 		public List<HDDrive> drives_list { get; set; }
-		public List<String> CustomMessages { get; set; }
+		public List<String> DriveThresholds_list = new List<string>();
+		public List<String> CustomMessages_list { get; set; }
 		public List<String> Settings_list = new List<string>();
 		//key events
 		#region GlobalKeyEvents
@@ -71,7 +74,7 @@ namespace EditingTimeStampTool
 		{
 			TimeStamps = new List<TimestampInfo>();
 			drives_list = new List<HDDrive>();
-			CustomMessages = new List<string>();
+			CustomMessages_list = new List<string>();
 			InitializeComponent();
 			this.DataContext = this;
 		}
@@ -88,8 +91,8 @@ namespace EditingTimeStampTool
 			HDDCheck_Timer.Start();
 
 			//load files
-			CustomMessages = File.ReadLines("CustomMessages.txt").ToList();
-			Messages_LB.ItemsSource = CustomMessages;
+			CustomMessages_list = File.ReadLines("CustomMessages.txt").ToList();
+			Messages_LB.ItemsSource = CustomMessages_list;
 			Settings_list = File.ReadLines("Settings.txt").ToList();
 
 			//init drives
@@ -104,29 +107,53 @@ namespace EditingTimeStampTool
 			{
 				Err_OutputLog.AddErrorLogItem(-1, "Error On Loaded [Find Drives]", "GTST", false);
 				Err_OutputLog.AddLogItem(ERR.ToString());
-				return;
 			}
 			//list display stuff.
 			drives_list.Clear();
 			HDDSpace_LB.ItemsSource = null;
 
+			if (!File.Exists("DriveThresholds.txt"))
+			{
+				using (FileStream fs = File.Create("DriveThresholds.txt"))
+				{
+				}
+				List<String> exportstring = new List<string>();
+				foreach (DriveInfo tsi in drives)
+				{
+					exportstring.Add("5"); 
+				}
+				using (TextWriter tw = new StreamWriter("DriveThresholds.txt"))
+				{
+					foreach (String s in exportstring)
+						tw.WriteLine(s);
+				}
+			}
+			DriveThresholds_list = File.ReadLines("DriveThresholds.txt").ToList();
+
+
+			int i = 0;
 			foreach (DriveInfo d in drives)
 			{
 				try
 				{
-					driveinfo.Add((getalldrivestotalnfreespace(d)).Split('\t').ToList());
+					if ((getalldrivestotalnfreespace(d)).Count > 0)
+					{
+						driveinfo.Add((getalldrivestotalnfreespace(d)));
+					}
+					else continue;
+					Err_OutputLog.AddLogItem(driveinfo.Last().Count.ToString());
 					drives_list.Add(new HDDrive()
 					{
-						DriveName = driveinfo.Last()[0].Substring(driveinfo.Last()[0].IndexOf("["), 4),
+						DriveName = driveinfo.Last()[0],
 						SpaceRemaining = driveinfo.Last()[1].Trim(),
-						SpaceRemaining_Percent = driveinfo.Last()[5].Trim(),
+						SpaceRemaining_Percent = driveinfo.Last()[2].Trim(),
+						SoundThreshold = Int32.Parse(DriveThresholds_list[i++])
 					});
 				}
 				catch (Exception ERR)
 				{
 					Err_OutputLog.AddLogItem(ERR.ToString());
 					Err_OutputLog.AddErrorLogItem(-1, String.Format("Error On Loaded [Reading Drives] Drive:{0}",d.Name), "GTST", false);
-					return;
 				}
 			}
 
@@ -140,7 +167,6 @@ namespace EditingTimeStampTool
 			{
 				Err_OutputLog.AddLogItem(ERR.ToString());
 				Err_OutputLog.AddErrorLogItem(-1, String.Format("Error On Loaded [Music Play]"), "GTST", false);
-				return;
 			}
 
 			HDDSpace_LB.ItemsSource = drives_list;
@@ -172,9 +198,9 @@ namespace EditingTimeStampTool
 			{
 				Err_OutputLog.AddErrorLogItem(-2, "Error On Loaded [HOT KEYS]", "GTST", false);
 				Err_OutputLog.AddLogItem(ERR.ToString());
-				return;
 			}
-
+			DrivesSettings_LB.ItemsSource = null;
+			DrivesSettings_LB.ItemsSource  = drives_list;
 		}
 
 		#region Hooks
@@ -208,6 +234,39 @@ namespace EditingTimeStampTool
 				RecordingTimer.Start();
 				RecordingTimer_log.Start();
 			}
+			if (bIsRecording)
+			{
+				MessageBoxResult dialogResult = MessageBox.Show("Restart the recording, and discard this log?", "Fat Finger Check :p", MessageBoxButton.YesNo);
+				if (dialogResult == MessageBoxResult.Yes)
+				{
+					//reset
+					TimeStamps.Clear();
+
+					RecordingTimer.Restart();
+					RecordingTimer.Start();
+					RecordingTimer_log.Start();
+
+					TimeStamps_LB.ItemsSource = null;
+					TimeStamps_LB.ItemsSource = TimeStamps;
+					bIsRecording = true;
+				}
+				else if (dialogResult == MessageBoxResult.No)
+				{
+					return;
+				}
+			}
+
+			TimeStamps.Clear();
+
+			RecordingTimer.Start();
+			RecordingTimer_log.Start();
+
+			TimeStamps_LB.ItemsSource = null;
+			TimeStamps_LB.ItemsSource = TimeStamps;
+			bIsRecording = true;
+			StartTimeStamp_BTN.IsEnabled = true;
+			SingleTimeStamp_BTN.IsEnabled = true;
+			AddMarkerTS_BTN.IsEnabled = true;
 		}
 
 		private void StopRecording()
@@ -219,18 +278,28 @@ namespace EditingTimeStampTool
 
 			RecordingTimer.Reset();
 			RecordingTimer_log.Stop();
-			ExportTimeStamps();
+			try
+			{
+				ExportTimeStamps();
+			}
+			catch(Exception	ERR)
+			{
+				Err_OutputLog.AddErrorLogItem(-3, "Exporting data error", "GTST", false);
+				Err_OutputLog.AddLogItem(ERR.ToString());
+			}
 		}
 
 		private void StartTimeStampHK()
 		{
 			if (StartTimeStamp_BTN.IsEnabled != false) {
 				TimeStamps_LB.ItemsSource = null;
-				TimeStamps.Add(new TimestampInfo() { StartTimeStamp = CurrentTime_TB.Text });
+				TimeStamps.Add(new TimestampInfo() { StartTimeStamp = CurrentTime_TB.Text, Type="TS" });
 				TimeStamps_LB.ItemsSource = TimeStamps;
 
 				StartTimeStamp_BTN.IsEnabled = false;
 				SingleTimeStamp_BTN.IsEnabled = false;
+				AddMarkerTS_BTN.IsEnabled = false;
+
 			}
 		}
 		private void StopTimeStampHK()
@@ -242,6 +311,10 @@ namespace EditingTimeStampTool
 
 			StartTimeStamp_BTN.IsEnabled = true;
 			SingleTimeStamp_BTN.IsEnabled = true;
+			AddMarkerTS_BTN.IsEnabled = true;
+
+			//write to back up file.
+			ExportTimeStamps(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP"));
 		}
 
 		private void SingleTimeStampHK()
@@ -253,9 +326,13 @@ namespace EditingTimeStampTool
 				{
 					StartTimeStamp = CurrentTime_TB.Text,
 					EndTimeStamp = CurrentTime_TB.Text,
+					Type = "STS"
 				});
 				TimeStamps_LB.ItemsSource = TimeStamps;
 			}
+
+			//write to back up file.
+			ExportTimeStamps(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP"));
 		}
 
 		private void HDDCheck_Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -266,24 +343,44 @@ namespace EditingTimeStampTool
 			List<List<string>> driveinfo = new List<List<string>>();
 			List<DriveInfo> drives = DriveInfo.GetDrives().ToList();
 
-			drives_list.Clear();
-			Dispatcher.BeginInvoke(new System.Threading.ThreadStart(() => HDDSpace_LB.ItemsSource = null));
+			//drives_list.Clear();
+			Dispatcher.BeginInvoke(new Action(() => HDDSpace_LB.ItemsSource = null));
+
+			int i = 0;
 			foreach (DriveInfo d in drives)
 			{
-				driveinfo.Add((getalldrivestotalnfreespace(d)).Split('\t').ToList());
-				drives_list.Add(new HDDrive()
+				try
 				{
-					DriveName = driveinfo.Last()[0].Substring(driveinfo.Last()[0].IndexOf("["), 4),
-					SpaceRemaining = driveinfo.Last()[1].Trim(),
-					SpaceRemaining_Percent = driveinfo.Last()[5].Trim(),
-				});
-				if (double.TryParse(driveinfo.Last()[5].Replace("%", ""), out double val))
-				{
-					if (val < 5) bNoSound &= false;
+					if ((getalldrivestotalnfreespace(d)).Count > 0)
+					{
+						driveinfo.Add((getalldrivestotalnfreespace(d)));
+					}
+					else continue;
+					driveinfo[driveinfo.Count - 1] = driveinfo.Last().Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+					drives_list[i] = new HDDrive()
+					{
+						DriveName = driveinfo.Last()[0],
+						SpaceRemaining = driveinfo.Last()[1].Trim(),
+						SpaceRemaining_Percent = driveinfo.Last()[2].Trim(),
+						SoundThreshold = drives_list[i].SoundThreshold
+					};
+					if (double.TryParse(driveinfo[i][2].Replace("%", ""), out double val))
+					{
+						if (val < drives_list[i].SoundThreshold) bNoSound &= false;
+					}
+					
 				}
+				catch (Exception ERR)
+				{
+					Dispatcher.BeginInvoke(new Action(() => Err_OutputLog.AddLogItem(ERR.ToString())));
+					Dispatcher.BeginInvoke(new Action(() => Err_OutputLog.AddErrorLogItem(-1, String.Format("Error On Loaded [Reading Drives] Drive:{0}", d.Name), "GTST", false)));
+					//return;
+				}
+				i++;
 			}
 
-			Dispatcher.BeginInvoke(new System.Threading.ThreadStart(() => HDDSpace_LB.ItemsSource = drives_list));
+
+			Dispatcher.BeginInvoke(new Action(() => HDDSpace_LB.ItemsSource = drives_list));
 
 			if (!bNoSound)
 			{
@@ -298,8 +395,8 @@ namespace EditingTimeStampTool
 			long ticks = (RecordingTimer.ElapsedMilliseconds);
 			TimeSpan time = TimeSpan.FromMilliseconds(ticks);
 			//DateTime startdate = time;
-			Dispatcher.BeginInvoke(new System.Threading.ThreadStart(() => CurrentTime_TB.Text = time.ToString()));
-			//CurrentTime_TB.Text = time.ToString();
+			if (time.ToString().LastIndexOf(".") > 0)
+				Dispatcher.BeginInvoke(new System.Threading.ThreadStart(() => CurrentTime_TB.Text = time.ToString().Substring(0, time.ToString().LastIndexOf("."))));
 		}
 
 		private void HotKey_MI_Click(object sender, RoutedEventArgs e)
@@ -307,6 +404,7 @@ namespace EditingTimeStampTool
 			TimeStamp_Grid.Visibility = Visibility.Hidden;
 			HotKey_Grid.Visibility = Visibility.Visible;
 			Comments_Grid.Visibility = Visibility.Hidden;
+			Drives_Grid.Visibility = Visibility.Hidden;
 
 		}
 		private void QuickMessages_MI_Click(object sender, RoutedEventArgs e)
@@ -314,6 +412,15 @@ namespace EditingTimeStampTool
 			TimeStamp_Grid.Visibility = Visibility.Hidden;
 			HotKey_Grid.Visibility = Visibility.Hidden;
 			Comments_Grid.Visibility = Visibility.Visible;
+			Drives_Grid.Visibility = Visibility.Hidden;
+		}
+
+		private void Drives_MI_Click(object sender, RoutedEventArgs e)
+		{
+			Drives_Grid.Visibility  = Visibility.Visible;
+			TimeStamp_Grid.Visibility = Visibility.Hidden;
+			HotKey_Grid.Visibility = Visibility.Hidden;
+			Comments_Grid.Visibility = Visibility.Hidden;
 		}
 
 		private void TimeStampes_MI_Click(object sender, RoutedEventArgs e)
@@ -321,6 +428,7 @@ namespace EditingTimeStampTool
 			TimeStamp_Grid.Visibility = Visibility.Visible;
 			HotKey_Grid.Visibility = Visibility.Hidden;
 			Comments_Grid.Visibility = Visibility.Hidden;
+			Drives_Grid.Visibility = Visibility.Hidden;
 		}
 		private void FileBrowse_BTN_Click(object sender, RoutedEventArgs e)
 		{
@@ -369,24 +477,75 @@ namespace EditingTimeStampTool
 
 			RecordingTimer.Reset();
 			RecordingTimer_log.Stop();
-			ExportTimeStamps();
+			try
+			{
+				ExportTimeStamps();
+			}
+			catch (Exception ERR)
+			{
+				Err_OutputLog.AddErrorLogItem(-3, "Exporting data error", "GTST", false);
+				Err_OutputLog.AddLogItem(ERR.ToString());
+			}
+			bIsRecording = false;	
 		}
 
 		private void StartRecording_BTN_Click(object sender, RoutedEventArgs e)
 		{
 
+
+			if (bIsRecording)
+			{
+				MessageBoxResult dialogResult = MessageBox.Show("Restart the recording, and discard this log?", "Fat Finger Check :p", MessageBoxButton.YesNo);
+				if (dialogResult == MessageBoxResult.Yes)
+				{
+					//reset
+					TimeStamps.Clear();
+
+					RecordingTimer.Restart();
+					RecordingTimer.Start();
+					RecordingTimer_log.Start();
+
+					TimeStamps_LB.ItemsSource = null;
+					TimeStamps_LB.ItemsSource = TimeStamps;
+					bIsRecording = true;
+				}
+				else if (dialogResult == MessageBoxResult.No)
+				{
+					return;
+				}
+			}
+
+			TimeStamps.Clear();
+
 			RecordingTimer.Start();
 			RecordingTimer_log.Start();
+
+			TimeStamps_LB.ItemsSource = null;
+			TimeStamps_LB.ItemsSource = TimeStamps;
+			bIsRecording = true;
+			StartTimeStamp_BTN.IsEnabled = true;
+			SingleTimeStamp_BTN.IsEnabled = true;
+			AddMarkerTS_BTN.IsEnabled = true;
+
+			using (FileStream fs = File.Create(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP")))
+			{
+
+			}
+
 		}
 
 		private void StartTimeStamp_BTN_Click(object sender, RoutedEventArgs e)
 		{
+
+
 			TimeStamps_LB.ItemsSource = null;
-			TimeStamps.Add(new TimestampInfo() { StartTimeStamp = CurrentTime_TB.Text });
+			TimeStamps.Add(new TimestampInfo() { StartTimeStamp = CurrentTime_TB.Text, Type="TS" });
 			TimeStamps_LB.ItemsSource = TimeStamps;
 
 			StartTimeStamp_BTN.IsEnabled = false;
 			SingleTimeStamp_BTN.IsEnabled = false;
+			AddMarkerTS_BTN.IsEnabled = false;
+
 		}
 
 		private void EndTimeStop_BTN_Click(object sender, RoutedEventArgs e)
@@ -398,7 +557,12 @@ namespace EditingTimeStampTool
 
 			StartTimeStamp_BTN.IsEnabled = true;
 			SingleTimeStamp_BTN.IsEnabled = true;
+			AddMarkerTS_BTN.IsEnabled = true;
+
+			//write to back up file.
+			ExportTimeStamps(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP"));
 		}
+
 		private void SingleTimeStamp_BTN_Click(object sender, RoutedEventArgs e)
 		{
 			TimeStamps_LB.ItemsSource = null;
@@ -406,9 +570,28 @@ namespace EditingTimeStampTool
 			{
 				StartTimeStamp = CurrentTime_TB.Text,
 				EndTimeStamp = CurrentTime_TB.Text,
-				Comment = ""
+				Comment = "",
+				Type="STS"
 			});
 			TimeStamps_LB.ItemsSource = TimeStamps;
+
+			//write to back up file.
+			ExportTimeStamps(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP"));
+		}
+
+		private void AddMarkerTS_BTN_Click(object sender, RoutedEventArgs e)
+		{
+			TimeStamps_LB.ItemsSource = null;
+			TimeStamps.Add(new TimestampInfo()
+			{
+				StartTimeStamp = CurrentTime_TB.Text,
+				Comment = "",
+				Type = "M"
+			});
+			TimeStamps_LB.ItemsSource = TimeStamps;
+
+			//write to back up file.
+			ExportTimeStamps(FileName_TB.Text.Insert(FileName_TB.Text.Length - 4, "_BACKUP"));
 		}
 
 		private void EnableRecording()
@@ -417,8 +600,6 @@ namespace EditingTimeStampTool
 				FileName_TB.Text = FileName_TB.Text.Replace(FileNameAddition, "");
 			FileNameAddition = String.Format("_{0}_{1}", Game_TB.Text, SessionNum_TB.Text);
 			FileName_TB.Text = FileName_TB.Text.Insert(FileName_TB.Text.LastIndexOf("."), FileNameAddition);
-			if (!File.Exists(FileName_TB.Text))
-				File.Create(FileName_TB.Text);
 
 			bCanRecord = true;
 			StartRecording_BTN.Visibility = Visibility.Visible;
@@ -458,6 +639,19 @@ namespace EditingTimeStampTool
 			else DisableRecording();
 		}
 
+		private void IntervalMin_TB_Changed(object sender, TextChangedEventArgs e)
+		{
+			if(Int32.TryParse((sender as TextBox).Text, out int val) && val > 0)
+			{
+				HDDCheckInterval = (long)TimeSpan.FromMinutes(val).TotalMilliseconds;
+				HDDCheck_Timer.Interval = HDDCheckInterval;
+			}
+			else
+			{
+				(sender as TextBox).Text = "";
+			}
+		}
+
 		private bool CanRecord()
 		{
 			if (Game_TB.Text != "" && SessionNum_TB.Text != "" && FileName_TB.Text != "")
@@ -465,8 +659,10 @@ namespace EditingTimeStampTool
 			return false;
 		}
 
-		public string getalldrivestotalnfreespace(DriveInfo drive)
+		public List<String> getalldrivestotalnfreespace(DriveInfo drive)
 		{
+			List<String> retlist = new List<string>();
+
 			string s = "";//"    Drive          Free Space   TotalSpace     FileSystem    %Free Space       DriveType\n\r========================================================================================\n\r";
 			double ts = 0;
 			double fs = 0;
@@ -475,7 +671,7 @@ namespace EditingTimeStampTool
 			long divfs = 1024 * 1024 * 1024;
 			string tsunit = "GB";
 			string fsunit = "GB";
-			if (drive.IsReady)
+			if (drive.IsReady && drive.DriveType != DriveType.CDRom)
 			{
 				fs = drive.TotalFreeSpace;
 				ts = drive.TotalSize;
@@ -505,17 +701,21 @@ namespace EditingTimeStampTool
 				{
 					divfs = 1024 * 1024; fsunit = "MB";
 				}
-				s = s +
+				s = "[" +  drive.Name.Substring(0, 2) + "]" + s +
 				" " + drive.VolumeLabel.ToString() +
-				"[" + drive.Name.Substring(0, 2) +
-				"]\t" + String.Format("{0,10:0.0}", ((fs / divfs)).ToString("N2")) + fsunit +
+				"\t" + String.Format("{0,10:0.0}", ((fs / divfs)).ToString("N2")) + fsunit +
 				String.Format("\t{0,10:0.0}", (ts / divts).ToString("N2")) + tsunit +
 				"\t" + drive.DriveFormat.ToString() + "\t\t" + frprcntg.ToString("N2") + "%" +
 				"\t\t" + drive.DriveType.ToString();
 
 				s = s + "\n\r";
+
+				retlist.Add("[" + drive.Name.Substring(0, 2) + "]" + " " + drive.VolumeLabel.ToString());
+				retlist.Add(String.Format("\t{0,10:0.0}", (ts / divts).ToString("N2")) + tsunit);
+				retlist.Add(frprcntg.ToString("N2") + "%");
+
 			}
-			return s;
+			return retlist;
 		}
 
 		private void Test_MI_Click(object sender, RoutedEventArgs e)
@@ -527,12 +727,16 @@ namespace EditingTimeStampTool
 			HDDSpace_LB.ItemsSource = null;
 			foreach (DriveInfo d in drives)
 			{
-				driveinfo.Add((getalldrivestotalnfreespace(d)).Split('\t').ToList());
+				if ((getalldrivestotalnfreespace(d)).Count > 0)
+				{
+					driveinfo.Add((getalldrivestotalnfreespace(d)));
+				}
+				else continue;
 				drives_list.Add(new HDDrive()
 				{
 					DriveName = driveinfo.Last()[0].Substring(driveinfo.Last()[0].IndexOf("["), 4),
 					SpaceRemaining = driveinfo.Last()[1].Trim(),
-					SpaceRemaining_Percent = driveinfo.Last()[5].Trim(),
+					SpaceRemaining_Percent = driveinfo.Last()[2].Trim(),
 				});
 			}
 
@@ -541,22 +745,6 @@ namespace EditingTimeStampTool
 			player1.Play();
 
 			HDDSpace_LB.ItemsSource = drives_list;
-		}
-
-
-		public class TimestampInfo
-		{
-			public String StartTimeStamp { get; set; }
-			public String EndTimeStamp { get; set; }
-			public String Comment { get; set; }
-
-		}
-
-		public class HDDrive
-		{
-			public String DriveName { get; set; }
-			public String SpaceRemaining { get; set; }
-			public String SpaceRemaining_Percent { get; set; }
 		}
 
 		private void SessionNum_TB_Copy_KeyDown(object sender, KeyEventArgs e)
@@ -647,12 +835,12 @@ namespace EditingTimeStampTool
 		private void AddMsg_BTN_Click(object sender, RoutedEventArgs e)
 		{
 			Messages_LB.ItemsSource = null;
-			CustomMessages.Add(NewMessage_TB.Text);
-			Messages_LB.ItemsSource = CustomMessages;
+			CustomMessages_list.Add(NewMessage_TB.Text);
+			Messages_LB.ItemsSource = CustomMessages_list;
 
 			using (TextWriter tw = new StreamWriter("CustomMessages.txt"))
 			{
-				foreach (String s in CustomMessages)
+				foreach (String s in CustomMessages_list)
 					tw.WriteLine(s);
 			}
 		}
@@ -677,14 +865,81 @@ namespace EditingTimeStampTool
 			catch { return; }
 		}
 
+		private void ExportTimeStamps(String filename)
+		{
+			using (FileStream fs = File.Create(filename))
+			{
+
+			}
+
+			List<String> exportstring = new List<string>();
+			foreach (TimestampInfo tsi in TimeStamps)
+			{
+				if (tsi.Type == "TS")
+				{
+					exportstring.Add(String.Format("Time Stamp Start: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Time Stamp End: {0}", tsi.EndTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else if (tsi.Type == "STS")
+				{
+					exportstring.Add(String.Format("Single Time Stamp: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else if (tsi.Type == "M")
+				{
+					exportstring.Add(String.Format("Marker Time Stamp: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else
+				{
+					exportstring.Add(String.Format("Time Stamp Start: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Time Stamp End: {0}", tsi.EndTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+
+				exportstring.Add(""); exportstring.Add("");
+			}
+
+			using (TextWriter tw = new StreamWriter(filename))
+			{
+				foreach (String s in exportstring)
+					tw.WriteLine(s);
+			}
+		}
+
 		private void ExportTimeStamps()
 		{
+			using (FileStream fs = File.Create(FileName_TB.Text))
+			{
+
+			}
+
 			List<String> exportstring = new List<string>();
 			foreach(TimestampInfo tsi in TimeStamps)
 			{
-				exportstring.Add(String.Format("Time Stamp Start: {0}", tsi.StartTimeStamp));
-				exportstring.Add(String.Format("Time Stamp End: {0}", tsi.EndTimeStamp));
-				exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				if(tsi.Type == "TS")
+				{
+					exportstring.Add(String.Format("Time Stamp Start: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Time Stamp End: {0}", tsi.EndTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else if (tsi.Type == "STS")
+				{
+					exportstring.Add(String.Format("Single Time Stamp: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else if (tsi.Type == "M")
+				{
+					exportstring.Add(String.Format("Marker Time Stamp: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
+				else
+				{
+					exportstring.Add(String.Format("Time Stamp Start: {0}", tsi.StartTimeStamp));
+					exportstring.Add(String.Format("Time Stamp End: {0}", tsi.EndTimeStamp));
+					exportstring.Add(String.Format("Notes for Editor: {0}", tsi.Comment));
+				}
 
 				exportstring.Add(""); exportstring.Add("");
 			}
@@ -694,8 +949,8 @@ namespace EditingTimeStampTool
 				foreach (String s in exportstring)
 					tw.WriteLine(s);
 			}
-
-
+			if(Int32.TryParse(SessionNum_TB.Text, out int val))
+			SessionNum_TB.Text = (val+1).ToString();
 		}
 
 		private void ContextMenu_Closed(object sender, RoutedEventArgs e)
@@ -709,7 +964,7 @@ namespace EditingTimeStampTool
 			ContextMenu Cm = (ContextMenu)this.Resources["CustomMessages_CM"];
 			Cm.Items.Clear();
 			Cm.IsOpen = true;
-			foreach (String s in CustomMessages)
+			foreach (String s in CustomMessages_list)
 			{
 				MenuItem mi = new MenuItem() { Header = s };
 				mi.Click += Mi_Click;
@@ -738,6 +993,131 @@ namespace EditingTimeStampTool
 				Main_Grid.RowDefinitions.Last().Height = new GridLength(0);
 			}
 			bLog = !bLog;
+		}
+
+		private DependencyObject GetDependencyObjectFromVisualTree(DependencyObject startObject, Type type)
+		{
+			//Iterate the visual tree to get the parent(ItemsControl) of this control
+			DependencyObject parent = startObject;
+			while (parent != null)
+
+			{
+
+				if (type.IsInstanceOfType(parent))
+
+					break;
+
+				else
+
+					parent = VisualTreeHelper.GetParent(parent);
+
+			}
+			return parent;
+		}
+
+		private void MoveTSUp_BTN(object sender, RoutedEventArgs e)
+		{
+			var v = VisualTreeHelper.GetParent((sender as Button)); //in a loop  to go up the tree
+			//we need to know what "row" we are in when pressing this button
+			while(!(v is ListBoxItem))
+			{
+				v = VisualTreeHelper.GetParent(v);
+			}
+			VirtualizingStackPanel par = (VirtualizingStackPanel)VisualTreeHelper.GetParent(v);
+			int i = par.Children.IndexOf((v as ListBoxItem));
+			if (i > 0)
+			{
+				TimeStamps.Insert(i - 1, TimeStamps[i]);
+				TimeStamps.RemoveAt(i + 1);
+			}
+			TimeStamps_LB.ItemsSource = null;
+			TimeStamps_LB.ItemsSource = TimeStamps;
+		}
+
+		private void MoveTSDown_BTN(object sender, RoutedEventArgs e)
+		{
+			var v = VisualTreeHelper.GetParent((sender as Button)); //in a loop  to go up the tree
+
+			//we need to know what "row" we are in when pressing this button
+			while (!(v is ListBoxItem))
+			{
+				v = VisualTreeHelper.GetParent(v);
+			}
+			VirtualizingStackPanel par = (VirtualizingStackPanel)VisualTreeHelper.GetParent(v);
+			int i = par.Children.IndexOf((v as ListBoxItem));
+			if (i  < TimeStamps.Count-1)
+			{
+				TimeStamps.Insert(i + 2, TimeStamps[i]);
+				TimeStamps.RemoveAt(i);
+			}
+			TimeStamps_LB.ItemsSource = null;
+			TimeStamps_LB.ItemsSource = TimeStamps;
+		}
+
+
+		public class TimestampInfo
+		{
+			public String StartTimeStamp { get; set; }
+			public String EndTimeStamp { get; set; }
+			public String Comment { get; set; }
+			public String Type { get; set; }
+		}
+
+		public class HDDrive : INotifyPropertyChanged
+		{
+			public event PropertyChangedEventHandler PropertyChanged;
+			public String DriveName { get; set; }
+			public String SpaceRemaining { get; set; }
+			public String SpaceRemaining_Percent { get; set; }
+			private int soundthreshold;
+			public int SoundThreshold
+			{
+				get { return soundthreshold; }
+				set
+				{
+					soundthreshold = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SoundThreshold"));
+				}
+
+			}
+		}
+
+		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			var v = VisualTreeHelper.GetParent((sender as Slider)); //in a loop  to go up the tree
+																															//we need to know what "row" we are in when pressing this button
+			while (!(v is ListBoxItem))
+			{
+				v = VisualTreeHelper.GetParent(v);
+			}
+			VirtualizingStackPanel par = (VirtualizingStackPanel)VisualTreeHelper.GetParent(v);
+			if (par == null)
+			{
+				(sender as Slider).Value = e.NewValue;
+				return;
+			}
+			int i = par.Children.IndexOf((v as ListBoxItem));
+
+			drives_list[i].SoundThreshold = (int)(e.NewValue);
+
+			DrivesSettings_LB.ItemsSource = null;
+			DrivesSettings_LB.ItemsSource = drives_list;
+		}
+
+		private void SaveHDD_BTN_Click(object sender, RoutedEventArgs e)
+		{
+			List<String> temp = new List<string>();
+			for (int i = 0; i < drives_list.Count; i++)
+			{
+				temp.Add(drives_list[i].SoundThreshold.ToString());
+			}
+			using (TextWriter tw = new StreamWriter("DriveThresholds.txt"))
+			{
+				foreach (String s in temp)
+					tw.WriteLine(s);
+			}
+
+
 		}
 	}
 }

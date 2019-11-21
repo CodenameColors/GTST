@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_02E725375462160A74CB032E28618C02"
+        "MsmKey" = "8:_234B238D0CC0B854E9695AB93D18C3E3"
         "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,13 +27,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8EFF4A8031674574BC10FE6F31759279"
+        "MsmKey" = "8:_B324E4907D2545F1A393205AEB1170CE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C486782C8C34B80A921979DD919842D"
+        "MsmKey" = "8:_B4DDF986C993B87C4ACC424C5BA3E060"
+        "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D36B758F737144619F9DC453D0C1B311"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -46,19 +52,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FCCD068C57FD54BC15BB47518A6A8F8F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_02E725375462160A74CB032E28618C02"
+        "OwnerKey" = "8:_B4DDF986C993B87C4ACC424C5BA3E060"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_234B238D0CC0B854E9695AB93D18C3E3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FCCD068C57FD54BC15BB47518A6A8F8F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -79,6 +91,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -95,6 +123,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -124,14 +160,65 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_02E725375462160A74CB032E28618C02"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_234B238D0CC0B854E9695AB93D18C3E3"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:OutputLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_234B238D0CC0B854E9695AB93D18C3E3"
+                    {
+                    "Name" = "8:OutputLog.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:OutputLog.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B324E4907D2545F1A393205AEB1170CE"
+            {
+            "SourcePath" = "8:..\\EditingTimeStampTool\\Resources\\Settings.txt"
+            "TargetName" = "8:Settings.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B4DDF986C993B87C4ACC424C5BA3E060"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Hotkeys, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_02E725375462160A74CB032E28618C02"
+                    "_B4DDF986C993B87C4ACC424C5BA3E060"
                     {
                     "Name" = "8:Hotkeys.dll"
                     "Attributes" = "3:512"
@@ -155,29 +242,9 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8EFF4A8031674574BC10FE6F31759279"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D36B758F737144619F9DC453D0C1B311"
             {
-            "SourcePath" = "8:..\\EditingTimeStampTool\\bin\\Debug\\Settings.txt"
-            "TargetName" = "8:Settings.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C486782C8C34B80A921979DD919842D"
-            {
-            "SourcePath" = "8:..\\EditingTimeStampTool\\bin\\Debug\\CustomMessages.txt"
+            "SourcePath" = "8:..\\EditingTimeStampTool\\Resources\\CustomMessages.txt"
             "TargetName" = "8:CustomMessages.txt"
             "Tag" = "8:"
             "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
@@ -283,7 +350,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:GalmsRecordingTS"
         "ProductCode" = "8:{69174DAA-C8FF-4A5B-AD5B-9EE6F9B9D29A}"
-        "PackageCode" = "8:{F169E1A9-0A7B-4598-A6D7-C21A20B491AF}"
+        "PackageCode" = "8:{2B16927D-746D-4F2B-B29A-47C46B4880BB}"
         "UpgradeCode" = "8:{A787FA00-A052-4BB8-8E2D-E15185103537}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
