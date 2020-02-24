@@ -1119,5 +1119,10 @@ namespace EditingTimeStampTool
 
 
 		}
+
+		private void AddHotKey_BTN_OnClick_BTN_Click(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

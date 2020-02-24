@@ -58,7 +58,7 @@
 
 		</Grid>
 
-		<Grid x:Name="HotKey_Grid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden">
+		<Grid x:Name="HotKey_Grid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Visibility="Visible">
 			<Image Source="Image/GalmLogo.png" Margin="489,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78" Height="69"/>
 			<TextBlock Text="Click the box to reassign the key!" Foreground="White" Margin="213,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="173"/>
 			<TextBlock Text="Hot Keys:" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,2,0,0" FontWeight="Bold" Height="22" Width="96" RenderTransformOrigin="0.519,0.683"/>
@@ -85,10 +85,41 @@
 			<TextBox x:Name="SingleTimeStamp_HK_TB" Height="20" HorizontalAlignment="Left" Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  VerticalAlignment="Top" Width="224" Margin="184,104,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="SingleTimeStamp_HK_TB_KeyDown"/>
 			<CheckBox Content="CTRL" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,106,0,0" IsChecked="{Binding Path=bSingleTimeStamp, Mode=TwoWay}"/>
 
+			<Button x:Name="AddHotKey_BTN" Content="Add" Margin="499,133,0,0" Width="49" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#FF1E2126" BorderBrush="#FF02B98F" BorderThickness="2" Foreground="White" Click="AddHotKey_BTN_OnClick_BTN_Click"/>
+			<ListBox Background="Transparent" Foreground="White" BorderBrush="#FF02B98F"  Margin="10,158,10,6">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="25"/>
+								<ColumnDefinition Width="5"/>
+								<ColumnDefinition Width="50"/>
+								<ColumnDefinition Width="25"/>
+								<ColumnDefinition Width="50"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="25"/>
+								<ColumnDefinition Width="25"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="{Binding Type}"/>
+							<TextBlock Grid.Column="1" Text="|"/>
+							<TextBlock Grid.Column="2" Text="{Binding StartTimeStamp}"/>
+							<TextBlock Grid.Column="3" Text="-->"/>
+							<TextBlock Grid.Column="4" Text="{Binding EndTimeStamp}"/>
+							<TextBox  Grid.Column="5" Foreground="White" Background="Transparent" BorderBrush="#FF02B98F" Text="{Binding Comment, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" PreviewMouseRightButtonDown="CustomComment_MI_RightClick"/>
+							<Button Grid.Column="6" Click="MoveTSUp_BTN">
+								<Image Source="Image/Up.png"/>
+							</Button>
+							<Button Grid.Column="7" Click="MoveTSDown_BTN">
+								<Image Source="Image/Down.png" />
+							</Button>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 
 		</Grid>
 
-		<Grid x:Name="TimeStamp_Grid" Grid.Row="1" Visibility="Visible">
+		<Grid x:Name="TimeStamp_Grid" Grid.Row="1" Visibility="Hidden">
 			<Image Source="Image/GalmLogo.png" Margin="489,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="78" Height="69"/>
 
 			<TextBlock Grid.Row="1" Text="File Log Name:" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" Height="16" Width="79"/>
