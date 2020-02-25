@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EditingTimeStampTool.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AppBackgroundColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="AppOutlineColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+    <Setting Name="AppBoxFillColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF707070</Value>
+    </Setting>
+    <Setting Name="LogoURLPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AppTextColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

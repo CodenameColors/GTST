@@ -15,32 +15,26 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_234B238D0CC0B854E9695AB93D18C3E3"
-        "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B324E4907D2545F1A393205AEB1170CE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B4DDF986C993B87C4ACC424C5BA3E060"
+        "MsmKey" = "8:_924D60B4E63E3788EDCA0F5D60EB8006"
         "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D36B758F737144619F9DC453D0C1B311"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_9D2F62029AFC2AF474E102AAEF31B7E9"
+        "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CD5324EC43CBF838509490B2A77FC614"
+        "OwnerKey" = "8:_23998E7D0A754AA3BA44B7D3042564EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,13 +52,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B4DDF986C993B87C4ACC424C5BA3E060"
+        "OwnerKey" = "8:_9D2F62029AFC2AF474E102AAEF31B7E9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_234B238D0CC0B854E9695AB93D18C3E3"
+        "OwnerKey" = "8:_CD5324EC43CBF838509490B2A77FC614"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_924D60B4E63E3788EDCA0F5D60EB8006"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,6 +130,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
     }
@@ -160,65 +168,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_234B238D0CC0B854E9695AB93D18C3E3"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:OutputLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_234B238D0CC0B854E9695AB93D18C3E3"
-                    {
-                    "Name" = "8:OutputLog.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:OutputLog.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B324E4907D2545F1A393205AEB1170CE"
-            {
-            "SourcePath" = "8:..\\EditingTimeStampTool\\Resources\\Settings.txt"
-            "TargetName" = "8:Settings.txt"
-            "Tag" = "8:"
-            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B4DDF986C993B87C4ACC424C5BA3E060"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_924D60B4E63E3788EDCA0F5D60EB8006"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Hotkeys, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B4DDF986C993B87C4ACC424C5BA3E060"
+                    "_924D60B4E63E3788EDCA0F5D60EB8006"
                     {
                     "Name" = "8:Hotkeys.dll"
                     "Attributes" = "3:512"
@@ -242,10 +199,21 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D36B758F737144619F9DC453D0C1B311"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9D2F62029AFC2AF474E102AAEF31B7E9"
             {
-            "SourcePath" = "8:..\\EditingTimeStampTool\\Resources\\CustomMessages.txt"
-            "TargetName" = "8:CustomMessages.txt"
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CustomColorPicker, Version=1.0.7142.36104, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9D2F62029AFC2AF474E102AAEF31B7E9"
+                    {
+                    "Name" = "8:CustomColorPicker.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CustomColorPicker.dll"
+            "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
             "Condition" = "8:"
@@ -259,7 +227,38 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD5324EC43CBF838509490B2A77FC614"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:OutputLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_CD5324EC43CBF838509490B2A77FC614"
+                    {
+                    "Name" = "8:OutputLog.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:OutputLog.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FCCD068C57FD54BC15BB47518A6A8F8F"
@@ -348,20 +347,20 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:GalmsRecordingTS"
-        "ProductCode" = "8:{69174DAA-C8FF-4A5B-AD5B-9EE6F9B9D29A}"
-        "PackageCode" = "8:{2B16927D-746D-4F2B-B29A-47C46B4880BB}"
+        "ProductName" = "8:TimeStamper"
+        "ProductCode" = "8:{91C051D9-7FF0-4068-9846-EAB9AD07ADD2}"
+        "PackageCode" = "8:{0C31807E-A385-475E-9EFA-7D850506CEFF}"
         "UpgradeCode" = "8:{A787FA00-A052-4BB8-8E2D-E15185103537}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:GalmsTools"
+        "ProductVersion" = "8:1.4.3"
+        "Manufacturer" = "8:ETST"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:GalmsRecordingTS"
+        "Title" = "8:TimeStamper"
         "Subject" = "8:"
         "ARPCONTACT" = "8:AntonioMorales"
         "Keywords" = "8:"
@@ -898,6 +897,34 @@
                 }
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_41A60EACD8B94597A2A1F6C5A3DF98A8"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E511EEEBC09F4A22AD0B6C4D8D1B3D94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:ReferenceCopyLocalPaths"
+            "OutputProjectGuid" = "8:{04948DD2-28CE-4654-8632-B0F429719193}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4890265698874485A0460ECBAB9A7B99"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"

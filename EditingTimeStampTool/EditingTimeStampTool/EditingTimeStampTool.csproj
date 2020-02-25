@@ -35,21 +35,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>galmlogo_IFK_icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomColorPicker">
+      <HintPath>Resources\CustomColorPicker.dll</HintPath>
+    </Reference>
     <Reference Include="Hotkeys, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Resources\Hotkeys.dll</HintPath>
     </Reference>
-    <Reference Include="OutputLog">
-      <HintPath>..\..\MyWPFControls\OutputLog\bin\Debug\OutputLog.dll</HintPath>
+    <Reference Include="OutputLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Resources\OutputLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -121,10 +130,14 @@
     <Resource Include="galmlogo_IFK_icon.ico" />
     <Resource Include="Image\Up.png" />
     <Resource Include="Image\Down.png" />
+    <Content Include="Resources\DefaultLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Hotkeys.dll" />
     <Resource Include="Resources\Settings.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Resources\OutputLog.dll" />
     <Content Include="Sounds\1-12 Battle Lose Result.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
