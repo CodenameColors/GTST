@@ -117,8 +117,7 @@ namespace EditingTimeStampTool
 
 		#endregion
 
-		public event PropertyChangedEventHandler PropertyChanged;
-
+		
 		public MainWindow()
 		{
 			TimeStamps = new List<TimestampInfo>();
